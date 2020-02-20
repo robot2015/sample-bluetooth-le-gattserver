@@ -61,6 +61,7 @@ public class GattServerActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
 
@@ -91,6 +92,7 @@ public class GattServerActivity extends Activity {
 
     @Override
     protected void onStart() {
+        Log.v(TAG, "onStart");
         super.onStart();
         // Register for system clock events
         IntentFilter filter = new IntentFilter();
@@ -102,12 +104,14 @@ public class GattServerActivity extends Activity {
 
     @Override
     protected void onStop() {
+        Log.v(TAG, "onStop");
         super.onStop();
         unregisterReceiver(mTimeReceiver);
     }
 
     @Override
     protected void onDestroy() {
+        Log.v(TAG, "onDestroy");
         super.onDestroy();
 
         BluetoothAdapter bluetoothAdapter = mBluetoothManager.getAdapter();
@@ -125,6 +129,7 @@ public class GattServerActivity extends Activity {
      * @return true if Bluetooth is properly supported, false otherwise.
      */
     private boolean checkBluetoothSupport(BluetoothAdapter bluetoothAdapter) {
+        Log.v(TAG, "checkBluetoothSupport");
 
         if (bluetoothAdapter == null) {
             Log.w(TAG, "Bluetooth is not supported");
@@ -146,6 +151,7 @@ public class GattServerActivity extends Activity {
     private BroadcastReceiver mTimeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v(TAG, "mTimeReceiver");
             byte adjustReason;
             switch (intent.getAction()) {
                 case Intent.ACTION_TIME_CHANGED:
@@ -172,6 +178,7 @@ public class GattServerActivity extends Activity {
     private BroadcastReceiver mBluetoothReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v(TAG, "mBluetoothReceiver");
             int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF);
 
             switch (state) {
@@ -195,6 +202,7 @@ public class GattServerActivity extends Activity {
      * and supports the Current Time Service.
      */
     private void startAdvertising() {
+        Log.v(TAG, "startAdvertising");
         BluetoothAdapter bluetoothAdapter = mBluetoothManager.getAdapter();
         mBluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
         if (mBluetoothLeAdvertiser == null) {
@@ -223,6 +231,7 @@ public class GattServerActivity extends Activity {
      * Stop Bluetooth advertisements.
      */
     private void stopAdvertising() {
+        Log.v(TAG, "stopAdvertising");
         if (mBluetoothLeAdvertiser == null) return;
 
         mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
@@ -233,6 +242,7 @@ public class GattServerActivity extends Activity {
      * from the Time Profile.
      */
     private void startServer() {
+        Log.v(TAG, "startServer");
         mBluetoothGattServer = mBluetoothManager.openGattServer(this, mGattServerCallback);
         if (mBluetoothGattServer == null) {
             Log.w(TAG, "Unable to create GATT server");
@@ -249,6 +259,7 @@ public class GattServerActivity extends Activity {
      * Shut down the GATT server.
      */
     private void stopServer() {
+        Log.v(TAG, "stopServer");
         if (mBluetoothGattServer == null) return;
 
         mBluetoothGattServer.close();
@@ -260,11 +271,13 @@ public class GattServerActivity extends Activity {
     private AdvertiseCallback mAdvertiseCallback = new AdvertiseCallback() {
         @Override
         public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            Log.v(TAG, "onStartSuccess");
             Log.i(TAG, "LE Advertise Started.");
         }
 
         @Override
         public void onStartFailure(int errorCode) {
+            Log.v(TAG, "onStartFailure");
             Log.w(TAG, "LE Advertise Failed: "+errorCode);
         }
     };
@@ -274,6 +287,7 @@ public class GattServerActivity extends Activity {
      * to the characteristic.
      */
     private void notifyRegisteredDevices(long timestamp, byte adjustReason) {
+        Log.v(TAG, "notifyRegisteredDevices");
         if (mRegisteredDevices.isEmpty()) {
             Log.i(TAG, "No subscribers registered");
             return;
@@ -294,6 +308,7 @@ public class GattServerActivity extends Activity {
      * Update graphical UI on devices that support it with the current time.
      */
     private void updateLocalUi(long timestamp) {
+        Log.v(TAG, "updateLocalUi");
         Date date = new Date(timestamp);
         String displayDate = DateFormat.getMediumDateFormat(this).format(date)
                 + "\n"
@@ -309,6 +324,7 @@ public class GattServerActivity extends Activity {
 
         @Override
         public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
+            Log.v(TAG, "onConnectionStateChange");
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.i(TAG, "BluetoothDevice CONNECTED: " + device);
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
@@ -321,6 +337,7 @@ public class GattServerActivity extends Activity {
         @Override
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset,
                                                 BluetoothGattCharacteristic characteristic) {
+            Log.v(TAG, "onCharacteristicReadRequest");
             long now = System.currentTimeMillis();
             if (TimeProfile.CURRENT_TIME.equals(characteristic.getUuid())) {
                 Log.i(TAG, "Read CurrentTime");
@@ -350,6 +367,7 @@ public class GattServerActivity extends Activity {
         @Override
         public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset,
                                             BluetoothGattDescriptor descriptor) {
+            Log.v(TAG, "onDescriptorReadRequest");
             if (TimeProfile.CLIENT_CONFIG.equals(descriptor.getUuid())) {
                 Log.d(TAG, "Config descriptor read");
                 byte[] returnValue;
@@ -378,6 +396,7 @@ public class GattServerActivity extends Activity {
                                              BluetoothGattDescriptor descriptor,
                                              boolean preparedWrite, boolean responseNeeded,
                                              int offset, byte[] value) {
+            Log.v(TAG, "onDescriptorWriteRequest");
             if (TimeProfile.CLIENT_CONFIG.equals(descriptor.getUuid())) {
                 if (Arrays.equals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, value)) {
                     Log.d(TAG, "Subscribe device to notifications: " + device);

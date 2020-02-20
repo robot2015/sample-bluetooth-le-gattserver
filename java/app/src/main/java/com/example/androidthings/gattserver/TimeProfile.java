@@ -19,6 +19,7 @@ package com.example.androidthings.gattserver;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -51,6 +52,7 @@ public class TimeProfile {
      * Current Time Service.
      */
     public static BluetoothGattService createTimeService() {
+        Log.v(TAG, "createTimeService");
         BluetoothGattService service = new BluetoothGattService(TIME_SERVICE,
                 BluetoothGattService.SERVICE_TYPE_PRIMARY);
 
@@ -81,6 +83,7 @@ public class TimeProfile {
      * from the given epoch timestamp and adjustment reason.
      */
     public static byte[] getExactTime(long timestamp, byte adjustReason) {
+        Log.v(TAG, "getExactTime");
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(timestamp);
 
@@ -119,6 +122,7 @@ public class TimeProfile {
      * from the given epoch timestamp.
      */
     public static byte[] getLocalTimeInfo(long timestamp) {
+        Log.v(TAG, "getLocalTimeInfo");
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(timestamp);
 
@@ -150,6 +154,7 @@ public class TimeProfile {
      * Bluetooth weekday code.
      */
     private static byte getDayOfWeekCode(int dayOfWeek) {
+        Log.v(TAG, "getDayOfWeekCode");
         switch (dayOfWeek) {
             case Calendar.MONDAY:
                 return DAY_MONDAY;
@@ -182,6 +187,7 @@ public class TimeProfile {
      * corresponding Bluetooth DST offset code.
      */
     private static byte getDstOffsetCode(int rawOffset) {
+        Log.v(TAG, "getDstOffsetCode");
         switch (rawOffset) {
             case 0:
                 return DST_STANDARD;
