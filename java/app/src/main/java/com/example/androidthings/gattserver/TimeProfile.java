@@ -28,30 +28,30 @@ import java.util.UUID;
  * Implementation of the Bluetooth GATT Time Profile.
  * https://www.bluetooth.com/specifications/adopted-specifications
  */
-public class TimeProfile {
+class TimeProfile {
     private static final String TAG = TimeProfile.class.getSimpleName();
 
     /* Current Time Service UUID */
-    public static UUID TIME_SERVICE = UUID.fromString("00001805-0000-1000-8000-00805f9b34fb");
+    static UUID TIME_SERVICE = UUID.fromString("00001805-0000-1000-8000-00805f9b34fb");
     /* Mandatory Current Time Information Characteristic */
-    public static UUID CURRENT_TIME    = UUID.fromString("00002a2b-0000-1000-8000-00805f9b34fb");
+    static UUID CURRENT_TIME    = UUID.fromString("00002a2b-0000-1000-8000-00805f9b34fb");
     /* Optional Local Time Information Characteristic */
-    public static UUID LOCAL_TIME_INFO = UUID.fromString("00002a0f-0000-1000-8000-00805f9b34fb");
+    static UUID LOCAL_TIME_INFO = UUID.fromString("00002a0f-0000-1000-8000-00805f9b34fb");
     /* Mandatory Client Characteristic Config Descriptor */
-    public static UUID CLIENT_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    static UUID CLIENT_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     // Adjustment Flags
-    public static final byte ADJUST_NONE     = 0x0;
-    public static final byte ADJUST_MANUAL   = 0x1;
-    public static final byte ADJUST_EXTERNAL = 0x2;
-    public static final byte ADJUST_TIMEZONE = 0x4;
-    public static final byte ADJUST_DST      = 0x8;
+    static final byte ADJUST_NONE     = 0x0;
+    static final byte ADJUST_MANUAL   = 0x1;
+    // public static final byte ADJUST_EXTERNAL = 0x2;
+    static final byte ADJUST_TIMEZONE = 0x4;
+    // public static final byte ADJUST_DST      = 0x8;
 
     /**
      * Return a configured {@link BluetoothGattService} instance for the
      * Current Time Service.
      */
-    public static BluetoothGattService createTimeService() {
+    static BluetoothGattService createTimeService() {
         Log.v(TAG, "createTimeService");
         BluetoothGattService service = new BluetoothGattService(TIME_SERVICE,
                 BluetoothGattService.SERVICE_TYPE_PRIMARY);
@@ -82,7 +82,7 @@ public class TimeProfile {
      * Construct the field values for a Current Time characteristic
      * from the given epoch timestamp and adjustment reason.
      */
-    public static byte[] getExactTime(long timestamp, byte adjustReason) {
+    static byte[] getExactTime(long timestamp, byte adjustReason) {
         Log.v(TAG, "getExactTime");
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(timestamp);
@@ -121,7 +121,7 @@ public class TimeProfile {
      * Construct the field values for a Local Time Information characteristic
      * from the given epoch timestamp.
      */
-    public static byte[] getLocalTimeInfo(long timestamp) {
+    static byte[] getLocalTimeInfo(long timestamp) {
         Log.v(TAG, "getLocalTimeInfo");
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(timestamp);

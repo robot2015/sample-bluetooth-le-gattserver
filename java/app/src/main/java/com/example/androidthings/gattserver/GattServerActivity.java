@@ -45,6 +45,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class GattServerActivity extends Activity {
@@ -65,12 +66,13 @@ public class GattServerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
 
-        mLocalTimeView = (TextView) findViewById(R.id.text_time);
+        mLocalTimeView = findViewById(R.id.text_time);
 
         // Devices with a display should not go to sleep
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mBluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+        assert mBluetoothManager != null;
         BluetoothAdapter bluetoothAdapter = mBluetoothManager.getAdapter();
         // We can't continue without proper Bluetooth support
         if (!checkBluetoothSupport(bluetoothAdapter)) {
@@ -153,7 +155,7 @@ public class GattServerActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             Log.v(TAG, "mTimeReceiver");
             byte adjustReason;
-            switch (intent.getAction()) {
+            switch (Objects.requireNonNull(intent.getAction())) {
                 case Intent.ACTION_TIME_CHANGED:
                     adjustReason = TimeProfile.ADJUST_MANUAL;
                     break;
