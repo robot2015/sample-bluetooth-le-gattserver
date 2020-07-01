@@ -303,6 +303,7 @@ public class GattServerActivity extends Activity {
                     .getCharacteristic(TimeProfile.CURRENT_TIME);
             timeCharacteristic.setValue(exactTime);
             mBluetoothGattServer.notifyCharacteristicChanged(device, timeCharacteristic, false);
+            Log.v(TAG, "Sending some data!");
         }
     }
 
@@ -329,6 +330,7 @@ public class GattServerActivity extends Activity {
             Log.v(TAG, "onConnectionStateChange");
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.i(TAG, "BluetoothDevice CONNECTED: " + device);
+                mRegisteredDevices.add(device); // rbeckman: adding device here.
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "BluetoothDevice DISCONNECTED: " + device);
                 //Remove device from any active subscriptions
